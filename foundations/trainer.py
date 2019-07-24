@@ -14,8 +14,8 @@
 
 """A function that trains a network on a dataset."""
 
-from lottery_ticket.foundations import paths
-from lottery_ticket.foundations import save_restore
+from foundations import paths
+from foundations import save_restore
 import tensorflow as tf
 
 

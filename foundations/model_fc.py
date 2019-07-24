@@ -18,7 +18,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from lottery_ticket.foundations import model_base
+from foundations import model_base
 import tensorflow as tf
 
 
@@ -55,8 +55,8 @@ class ModelFc(model_base.ModelBase):
           current_layer,
           units,
           activation,
-          kernel_initializer=tf.contrib.layers.xavier_initializer(
-              uniform=False))
+          kernel_initializer=tf.initializers.he_normal() #tf.contrib.layers.xavier_initializer(uniform=False)
+      )
 
     # Compute the loss and accuracy.
     self.create_loss_and_accuracy(label_placeholder, current_layer)

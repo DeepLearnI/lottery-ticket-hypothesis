@@ -20,15 +20,15 @@ from __future__ import print_function
 
 import functools
 import os
-from lottery_ticket.foundations import paths
-from lottery_ticket.mnist_fc import locations
+from foundations import paths
+from mnist_fc import locations
 import tensorflow as tf
 
 HYPERPARAMETERS = {'layers': [(300, tf.nn.relu), (100, tf.nn.relu), (10, None)]}
 
 MNIST_LOCATION = locations.MNIST_LOCATION
 
-FASHIONMNIST_LOCATION = locations.FASHIONMNIST_LOCATION
+#FASHIONMNIST_LOCATION = locations.FASHIONMNIST_LOCATION
 
 OPTIMIZER_FN = functools.partial(tf.train.GradientDescentOptimizer, .1)
 

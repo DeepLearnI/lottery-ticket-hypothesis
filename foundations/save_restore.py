@@ -21,7 +21,7 @@ from __future__ import print_function
 import csv
 import os
 
-from lottery_ticket.foundations import paths
+from foundations import paths
 import numpy as np
 import six
 import tensorflow as tf
@@ -80,9 +80,9 @@ def restore_network(filename):
 
   weights_dict = {}
 
-  for basename in tf.gfile.ListDirectory(filename):
+  for basename in ['y_test.npy', 'x_test.npy', 'y_train.npy', 'x_train.npy']: #tf.gfile.ListDirectory(filename):
     name = basename.split('.')[0]
-    with tf.gfile.FastGFile(os.path.join(filename, basename)) as fp:
+    with open(os.path.join(filename, basename), 'rb') as fp: #tf.gfile.FastGFile(os.path.join(filename, basename)) as fp:
       weights_dict[name] = np.load(fp)
 
   return weights_dict

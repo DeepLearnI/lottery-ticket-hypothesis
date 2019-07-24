@@ -49,6 +49,7 @@ def experiment(make_dataset, make_model, train_model, prune_masks, iterations,
 
   # A helper function that trains the network once according to the behavior
   # determined internally by the train_model function.
+  print('Training once according to the base model behaviour')
   def train_once(iteration, presets=None, masks=None):
     tf.reset_default_graph()
     sess = tf.Session()
@@ -60,15 +61,15 @@ def experiment(make_dataset, make_model, train_model, prune_masks, iterations,
   # Run once normally.
   initial, final = train_once(0, presets=presets)
 
-  # Create the initial masks with no weights pruned.
+  print('Create the initial masks with no weights pruned.')
   masks = {}
   for k, v in initial.items():
     masks[k] = np.ones(v.shape)
 
-  # Begin the training loop.
+  print('Begin the training loop.')
   for iteration in range(1, iterations + 1):
-    # Prune the network.
+    print('Prune the network, iteration {}'.format(iteration))
     masks = prune_masks(masks, final)
 
-    # Train the network again.
+    print('Train the network again after pruning')
     _, final = train_once(iteration, presets=initial, masks=masks)

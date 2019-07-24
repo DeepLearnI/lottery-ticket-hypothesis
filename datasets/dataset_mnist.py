@@ -15,8 +15,8 @@
 """The MNIST dataset."""
 
 import keras
-from lottery_ticket.foundations import dataset_base
-from lottery_ticket.foundations import save_restore
+from foundations import dataset_base
+from foundations import save_restore
 import numpy as np
 
 
