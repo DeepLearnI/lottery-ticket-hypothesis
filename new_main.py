@@ -19,12 +19,16 @@ from foundations import save_restore
 from foundations import trainer
 from mnist_fc import constants
 
-NUM_ITERATIONS = 2  #TODO HN: what's an iteration? steps? an epoch? does it matter???
+from utils import get_logger
+
+NUM_ITERATIONS = 1  # Number of times to prune the network
+
+logger = get_logger('main')
 
 def train(output_dir,
           mnist_location=constants.MNIST_LOCATION,
           training_len=constants.TRAINING_LEN,
-          iterations=30,
+          iterations=NUM_ITERATIONS,
           experiment_name='same_init',
           presets=None,
           permute_labels=False,
@@ -81,11 +85,11 @@ def train(output_dir,
         output_dir=paths.run(output_dir, level, experiment_name),
         **params)
 
-  print('Define a pruning function')
+  logger.info('Define a pruning function')
   prune_masks = functools.partial(pruning.prune_by_percent,
                                   constants.PRUNE_PERCENTS)
 
-  print('Run the experiment.')
+  logger.info('Run the experiment.')
   experiment.experiment(
       make_dataset,
       make_model,
@@ -94,6 +98,7 @@ def train(output_dir,
       iterations,
       presets=save_restore.standardize(presets))
 
-print('Training')
+logger.info('Training')
 train('/home/rm/lottery_ticket')
 
+logger.info("Pruning and training completed")

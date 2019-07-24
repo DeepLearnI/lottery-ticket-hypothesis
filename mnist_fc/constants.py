@@ -32,7 +32,7 @@ MNIST_LOCATION = locations.MNIST_LOCATION
 
 OPTIMIZER_FN = functools.partial(tf.train.GradientDescentOptimizer, .1)
 
-PRUNE_PERCENTS = {'layer0': .2, 'layer1': .2, 'layer2': .1}
+PRUNE_PERCENTS = {'layer0': .1, 'layer1': .1, 'layer2': .1}
 
 TRAINING_LEN = ('iterations', 50000)
 
