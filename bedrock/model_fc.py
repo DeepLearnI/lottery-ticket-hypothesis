@@ -52,6 +52,7 @@ class ModelFc(model_base.ModelBase):
     for i, (units, activation) in enumerate(hyperparameters['layers']):
       # TODO HN: replace this with Ray's CWDense class CWDense(512, layer_weights=weights)(inputs)
       # current_layer = CWDense(units=units, layer_weights=weights)(inputs)
+      '''
       if i < 2: # first two layers are convolutional
           print("this is conv layer {}".format(i))
           current_layer = self.Conv2D('conv_layer{}'.format(i),
@@ -61,6 +62,8 @@ class ModelFc(model_base.ModelBase):
                                       activation=activation,
                                       kernel_initializer=tf.initializers.he_normal()
                                       )
+
+      '''
       if i == 2:
           print("flattening after conv layers")
           current_layer = tf.reshape(current_layer, [tf.shape(current_layer)[0],

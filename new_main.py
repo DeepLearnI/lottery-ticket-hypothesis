@@ -100,6 +100,6 @@ def train(output_dir,
       presets=save_restore.standardize(presets))
 
 logger.info('Training')
-train('/home/rm/lottery_ticket')
+train('lottery_ticket')
 
 logger.info("Pruning and training completed")

@@ -21,6 +21,7 @@ from bedrock import save_restore
 import numpy as np
 
 
+
 class DatasetMnist(dataset_base.DatasetBase):
   """The MNIST dataset."""
 
@@ -39,12 +40,19 @@ class DatasetMnist(dataset_base.DatasetBase):
       train_order_seed: (optional) The random seed for shuffling the training
         set.
     """
-    mnist = save_restore.restore_network(mnist_location)
+    #mnist = save_restore.restore_network(mnist_location)
 
-    x_train = mnist['x_train']
-    x_test = mnist['x_test']
-    y_train = mnist['y_train']
-    y_test = mnist['y_test']
+    print("UGH")
+    
+    path = tf.keras.utils.get_file('mnist', 'https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz')
+    with np.load(path) as f:
+      x_train, y_train = f['x_train'], f['y_train']
+      x_test, y_test = f['x_test'], f['y_test']
+
+    #x_train = mnist['x_train']
+    #x_test = mnist['x_test']
+    #y_train = mnist['y_train']
+    #y_test = mnist['y_test']
 
     if permute_labels:
       # Reassign labels according to a random permutation of the labels.

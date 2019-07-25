@@ -17,7 +17,10 @@
 from bedrock import paths
 from bedrock import save_restore
 import tensorflow as tf
+import time 
+from utils import get_logger
 
+logger = get_logger('Train')
 
 def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
           **params):
@@ -131,9 +134,14 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
             return
 
           # Train.
+          
+          start_time = time.time()
           records = sess.run([optimize] + model.train_summaries,
                              {dataset.handle: train_handle})[1:]
           record_summaries(iteration, records, train_file)
+          
+          if iteration % 1000 == 0:
+            logger.info("Iteration: {} - Time taken: {}".format(iteration, time.time() - start_time))
 
           # Collect test and validation data if applicable.
           collect_test_summaries(iteration)
