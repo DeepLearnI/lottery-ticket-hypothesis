@@ -22,6 +22,7 @@ from mnist_fc import constants
 from utils import get_logger
 
 NUM_ITERATIONS = 1  # Number of times to prune the network
+EXPERIMENT_NAME = 'testing'
 
 logger = get_logger('main')
 
@@ -29,7 +30,7 @@ def train(output_dir,
           mnist_location=constants.MNIST_LOCATION,
           training_len=constants.TRAINING_LEN,
           iterations=NUM_ITERATIONS,
-          experiment_name='same_init',
+          experiment_name=EXPERIMENT_NAME,
           presets=None,
           permute_labels=False,
           train_order_seed=None):

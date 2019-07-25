@@ -2,7 +2,12 @@ import logging
 import os
 from datetime import datetime as dt
 
-log_path = '/home/rm/lottery_ticket/logs'
+log_path = 'logs' #/home/rm/lottery_ticket/logs/
+
+try:
+    os.mkdir(log_path)
+except:
+    pass
 
 def get_logger(name):
     logger_path = log_path
@@ -15,7 +20,7 @@ def get_logger(name):
     if not logger.handlers:
         # create a file handler
         current_time = dt.now().strftime('%m-%d')
-        file_handler = logging.FileHandler(os.path.join(logger_path, f'{current_time}.log'))
+        file_handler = logging.FileHandler(os.path.join(logger_path, '{}.log'.format(current_time)))
         file_handler.setLevel(logging.INFO)
         # create a logging format
         formats = '[%(asctime)s - %(name)s-%(lineno)d - %(funcName)s - %(levelname)s] %(message)s'

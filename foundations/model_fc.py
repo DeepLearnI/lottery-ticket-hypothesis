@@ -50,13 +50,30 @@ class ModelFc(model_base.ModelBase):
     # Build the network layer by layer.
     current_layer = input_placeholder
     for i, (units, activation) in enumerate(hyperparameters['layers']):
-      current_layer = self.dense_layer(
-          'layer{}'.format(i),
-          current_layer,
-          units,
-          activation,
-          kernel_initializer=tf.initializers.he_normal() #tf.contrib.layers.xavier_initializer(uniform=False)
-      )
+      # TODO HN: replace this with Ray's CWDense class CWDense(512, layer_weights=weights)(inputs)
+      # current_layer = CWDense(units=units, layer_weights=weights)(inputs)
+      if i < 2: # first two layers are convolutional
+          print("this is conv layer {}".format(i))
+          current_layer = self.Conv2D('conv_layer{}'.format(i),
+                                      inputs=current_layer,
+                                      channels=units,
+                                      kernel_size=(3,3),
+                                      activation=activation,
+                                      kernel_initializer=tf.initializers.he_normal()
+                                      )
+      if i == 2:
+          print("flattening after conv layers")
+          current_layer = tf.reshape(current_layer, [tf.shape(current_layer)[0],
+                                                     current_layer.shape[1] * current_layer.shape[2] * current_layer.shape[-1]]
+                                     )
+      if i >= 2:
+          current_layer = self.dense_layer(
+              'layer{}'.format(i), #name
+              current_layer, #inputs
+              units,
+              activation,
+              kernel_initializer=tf.initializers.he_normal() #tf.contrib.layers.xavier_initializer(uniform=False)
+          )
 
     # Compute the loss and accuracy.
-    self.create_loss_and_accuracy(label_placeholder, current_layer)
+    self.create_loss_and_accuracy(label_placeholder, current_layer)  # params (label_placeholder, output_logits)

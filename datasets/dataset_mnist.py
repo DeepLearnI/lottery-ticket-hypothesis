@@ -14,7 +14,8 @@
 
 """The MNIST dataset."""
 
-import keras
+#import keras
+import tensorflow as tf
 from foundations import dataset_base
 from foundations import save_restore
 import numpy as np
@@ -25,7 +26,7 @@ class DatasetMnist(dataset_base.DatasetBase):
 
   def __init__(self,
                mnist_location,
-               flatten=True,
+               flatten=False,#True,
                permute_labels=False,
                train_order_seed=None):
     """Create an MNIST dataset object.
@@ -55,14 +56,17 @@ class DatasetMnist(dataset_base.DatasetBase):
     if flatten:
       x_train = x_train.reshape((x_train.shape[0], -1))
       x_test = x_test.reshape((x_test.shape[0], -1))
+    else:
+      x_train = np.expand_dims(x_train, axis=-1)
+      x_test = np.expand_dims(x_test, axis=-1)
 
     # Normalize x_train and x_test.
-    x_train = keras.utils.normalize(x_train).astype(np.float32)
-    x_test = keras.utils.normalize(x_test).astype(np.float32)
+    x_train = tf.keras.utils.normalize(x_train).astype(np.float32)
+    x_test = tf.keras.utils.normalize(x_test).astype(np.float32)
 
     # Convert y_train and y_test to one-hot.
-    y_train = keras.utils.to_categorical(y_train)
-    y_test = keras.utils.to_categorical(y_test)
+    y_train = tf.keras.utils.to_categorical(y_train)
+    y_test = tf.keras.utils.to_categorical(y_test)
 
     # Prepare the dataset.
     super(DatasetMnist, self).__init__(
