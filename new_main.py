@@ -11,12 +11,12 @@ from __future__ import print_function
 
 import functools
 from datasets import dataset_mnist
-from foundations import experiment
-from foundations import model_fc
-from foundations import paths
-from foundations import pruning
-from foundations import save_restore
-from foundations import trainer
+from bedrock import experiment
+from bedrock import model_fc
+from bedrock import paths
+from bedrock import pruning
+from bedrock import save_restore
+from bedrock import trainer
 from mnist_fc import constants
 
 from utils import get_logger
@@ -38,7 +38,7 @@ def train(output_dir,
 
   The output of each experiment will be stored in a directory called:
   {output_dir}/{pruning level}/{experiment_name} as defined in the
-  foundations.paths module.
+  bedrock.paths module.
 
   Args:
     output_dir: Parent directory for all output files.
@@ -53,7 +53,7 @@ def train(output_dir,
         array containing the initializations.
       * The string name of a directory containing one file for each
         set of weights that is to be initialized (in the form of
-        foundations.save_restore).
+        bedrock.save_restore).
       * None, meaning the network should be randomly initialized.
     permute_labels: Whether to permute the labels on the dataset.
     train_order_seed: The random seed, if any, to be used to determine the

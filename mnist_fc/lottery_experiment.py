@@ -41,7 +41,7 @@ def train(output_dir,
 
   The output of each experiment will be stored in a directory called:
   {output_dir}/{pruning level}/{experiment_name} as defined in the
-  foundations.paths module.
+  bedrock.paths module.
 
   Args:
     output_dir: Parent directory for all output files.
@@ -56,7 +56,7 @@ def train(output_dir,
         array containing the initializations.
       * The string name of a directory containing one file for each
         set of weights that is to be initialized (in the form of
-        foundations.save_restore).
+        bedrock.save_restore).
       * None, meaning the network should be randomly initialized.
     permute_labels: Whether to permute the labels on the dataset.
     train_order_seed: The random seed, if any, to be used to determine the

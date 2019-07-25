@@ -51,7 +51,7 @@ def train(output_dir,
         corresponding tensor that is to be masked out. Each value is a numpy
         array containing the masks (1 for including a weight, 0 for excluding).
       * The string name of a directory containing one file for each
-        mask (in the form of foundations.save_restore).
+        mask (in the form of bedrock.save_restore).
       * None, meaning the network should not be pruned.
     initialization_distribution: The distribution from which weights are sampled
       If the argument is None, the weights are samples from the default

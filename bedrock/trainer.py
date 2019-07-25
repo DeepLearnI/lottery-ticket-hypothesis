@@ -14,8 +14,8 @@
 
 """A function that trains a network on a dataset."""
 
-from foundations import paths
-from foundations import save_restore
+from bedrock import paths
+from bedrock import save_restore
 import tensorflow as tf
 
 

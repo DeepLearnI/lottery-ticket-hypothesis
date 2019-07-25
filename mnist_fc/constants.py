@@ -20,7 +20,7 @@ from __future__ import print_function
 
 import functools
 import os
-from foundations import paths
+from bedrock import paths
 from mnist_fc import locations
 import tensorflow as tf
 

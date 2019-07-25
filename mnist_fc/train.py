@@ -50,7 +50,7 @@ def train(output_dir,
         corresponding tensor that is to be masked out. Each value is a numpy
         array containing the masks (1 for including a weight, 0 for excluding).
       * The string name of a directory containing one file for each
-        mask (in the form of foundations.save_restore).
+        mask (in the form of bedrock.save_restore).
       * A list of strings paths and dictionaries representing several masks.
         The mask used for training is the union of the pruned networks
         represented by these masks.

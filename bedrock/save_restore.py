@@ -21,7 +21,7 @@ from __future__ import print_function
 import csv
 import os
 
-from foundations import paths
+from bedrock import paths
 import numpy as np
 import six
 import tensorflow as tf

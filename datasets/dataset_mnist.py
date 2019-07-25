@@ -16,8 +16,8 @@
 
 #import keras
 import tensorflow as tf
-from foundations import dataset_base
-from foundations import save_restore
+from bedrock import dataset_base
+from bedrock import save_restore
 import numpy as np
 
 
