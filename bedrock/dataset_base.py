@@ -22,7 +22,7 @@ class DatasetSplit(object):
 
   def __init__(self, data, batch_size=None, shuffle=False, seed=None):
     #size = data[0].shape[0]
-    size = 512
+    size = 4096
 
     # Build the dataset.
     self._dataset = tf.data.Dataset.from_tensor_slices(data)
