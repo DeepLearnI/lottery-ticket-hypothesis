@@ -22,7 +22,7 @@ from mnist_fc import constants
 from utils import get_logger
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 NUM_ITERATIONS = 1  # Number of times to prune the network
 EXPERIMENT_NAME = 'testing'

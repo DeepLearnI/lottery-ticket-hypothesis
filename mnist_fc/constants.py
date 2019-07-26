@@ -21,17 +21,18 @@ from __future__ import print_function
 import functools
 import os
 from bedrock import paths
-from mnist_fc import locations
+from mnist_fc import constants
 import tensorflow as tf
 
 HYPERPARAMETERS = {'layers': [(256, tf.nn.relu), (256, tf.nn.relu), (256, tf.nn.relu), (100, tf.nn.relu), (10, None)]}
-MNIST_LOCATION = locations.MNIST_LOCATION
+MNIST_LOCATION = constants.MNIST_LOCATION
 #FASHIONMNIST_LOCATION = locations.FASHIONMNIST_LOCATION
 OPTIMIZER_FN = functools.partial(tf.train.GradientDescentOptimizer, .1)
 PRUNE_PERCENTS = {'layer0': .3, 'layer1': .2, 'layer2': .1, 'layer3': .1, 'layer4': .1}
 TRAINING_LEN = ('iterations', 50000)
-EXPERIMENT_PATH = locations.EXPERIMENT_PATH
 
+EXPERIMENT_PATH = 'mnist_fc_data'
+MNIST_LOCATION = '/home/rm/lottery_ticket/mnist_fc/datasets/mnist' #'datasets/mnist'  #'/home/rm/lottery_ticket/mnist_fc/datasets/mnist'
 
 def graph(category, filename):
   return os.path.join(EXPERIMENT_PATH, 'graphs', category, filename)

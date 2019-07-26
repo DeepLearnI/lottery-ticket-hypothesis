@@ -21,10 +21,10 @@ from __future__ import print_function
 import fire
 from keras.datasets import mnist
 from lottery_ticket.foundations import save_restore
-from lottery_ticket.mnist_fc import locations
+from lottery_ticket.mnist_fc import constants
 
 
-def download(location=locations.MNIST_LOCATION):
+def download(location=constants.MNIST_LOCATION):
   d = {}
   (d['x_train'], d['y_train']), (d['x_test'], d['y_test']) = mnist.load_data()
   save_restore.save_network(location, d)
