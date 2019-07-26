@@ -55,7 +55,9 @@ def experiment(make_dataset, make_model, train_model, prune_masks, iterations,
   logger.info('Training once according to the base model behaviour')
   def train_once(iteration, presets=None, masks=None):
     tf.reset_default_graph()
-    sess = tf.Session()
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    sess = tf.Session(config=config)
     dataset = make_dataset()
     input_tensor, label_tensor = dataset.placeholders
     model = make_model(input_tensor, label_tensor, presets=presets, masks=masks)

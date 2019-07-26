@@ -55,7 +55,7 @@ class ModelFc(model_base.ModelBase):
       
       if i < 2: # first two layers are convolutional
           print("this is conv layer {}".format(i))
-          current_layer = self.Conv2D('conv_layer{}'.format(i),
+          current_layer = self.Conv2D('layer{}'.format(i),
                                       inputs=current_layer,
                                       channels=units,
                                       kernel_size=(3,3),
