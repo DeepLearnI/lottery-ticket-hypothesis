@@ -27,6 +27,7 @@ HYPERPARAMETERS = {'layers': [(256, tf.nn.relu), (256, tf.nn.relu), (256, tf.nn.
 #FASHIONMNIST_LOCATION = locations.FASHIONMNIST_LOCATION
 OPTIMIZER_FN = functools.partial(tf.train.GradientDescentOptimizer, .1)
 PRUNE_PERCENTS = {'layer0': .3, 'layer1': .2, 'layer2': .1, 'layer3': .1, 'layer4': .1}
+NUM_EPOCHS = 1
 TRAINING_LEN = ('iterations', 50000)
 
 EXPERIMENT_PATH = 'mnist_fc_data'

@@ -19,6 +19,7 @@ from bedrock import save_restore
 import tensorflow as tf
 import time
 from utils import get_logger
+from mnist_fc.constants import NUM_EPOCHS
 
 logger = get_logger('Train')
 
@@ -117,16 +118,18 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
         """The main training loop encapsulated in a function."""
         iteration = 0
         epoch = 0
+        print("Running training loop")
         while True:
             sess.run(dataset.train_initializer)
             epoch += 1
 
             # End training if we have passed the epoch limit.
-            if training_len[0] == 'epochs' and epoch > training_len[1]:
+            if training_len[0] == 'epochs' and epoch > NUM_EPOCHS: #training_len[1]:
                 return
 
             start_time = time.time()
             # One training epoch.
+            print("Epoch: {} out of {}".format(epoch, NUM_EPOCHS)) #training_len[1]))
             while True:
                 try:
                     iteration += 1
@@ -142,8 +145,9 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
                                        {dataset.handle: train_handle})[1:]
                     record_summaries(iteration, records, train_file)
 
-                    if iteration % 1000 == 0:
-                        logger.info("Iteration: {} - Time per step: {}".format(iteration, time.time() - step_time))
+                    print(iteration)
+                    if iteration % 100 == 0:
+                        logger.info("Step {} of {} - Time per step: {}".format(iteration, training_len[1], time.time() - step_time))
 
                     # Collect test and validation data if applicable.
                     collect_test_summaries(iteration)

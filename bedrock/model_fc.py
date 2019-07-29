@@ -50,11 +50,10 @@ class ModelFc(model_base.ModelBase):
     # Build the network layer by layer.
     current_layer = input_placeholder
     for i, (units, activation) in enumerate(hyperparameters['layers']):
-      # TODO HN: replace this with Ray's CWDense class CWDense(512, layer_weights=weights)(inputs)
-      # current_layer = CWDense(units=units, layer_weights=weights)(inputs)
-      
+
       if i < 2: # first two layers are convolutional
-          print("this is conv layer {}".format(i))
+          print("Creating convolutional layers")
+          #print("this is conv layer {}".format(i))
           current_layer = self.Conv2D('layer{}'.format(i),
                                       inputs=current_layer,
                                       channels=units,
@@ -65,7 +64,7 @@ class ModelFc(model_base.ModelBase):
 
       
       if i == 2:
-          print("flattening after conv layers")
+          print("Adding Flatten after convolutional layers")
           current_layer = tf.reshape(current_layer, [tf.shape(current_layer)[0],
                                                      current_layer.shape[1] * current_layer.shape[2] * current_layer.shape[-1]]
                                      )

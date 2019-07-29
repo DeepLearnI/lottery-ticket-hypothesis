@@ -22,6 +22,10 @@ from mnist_fc import constants
 from utils import get_logger
 import os
 
+# TODO Slack images from job to some channel / log "# params by prune iteration" and "accuracy by iteration"
+# TODO (cuz log artifacts will probably not be working until then)
+# TODO ENAS?
+
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 NUM_ITERATIONS = 1  # Number of times to prune the network

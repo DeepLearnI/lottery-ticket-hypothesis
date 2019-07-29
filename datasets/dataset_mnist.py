@@ -42,8 +42,6 @@ class DatasetMnist(dataset_base.DatasetBase):
     """
     #mnist = save_restore.restore_network(mnist_location)
 
-    print("UGH")
-    
     path = tf.keras.utils.get_file('mnist', 'https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz')
     with np.load(path) as f:
       x_train, y_train = f['x_train'], f['y_train']
