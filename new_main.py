@@ -5,6 +5,10 @@
 4. Resettheremainingparameterstotheirvaluesinθ0,creatingthewinningticketf(x;m⊙θ0).
 '''
 
+# foundations deploy --entrypoint new_main.py --env scheduler --project-name hallo
+
+# Ray's cluster IP: Redis on 34.74.117.163, host: 35.185.104.49
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -28,8 +32,10 @@ import os
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
-NUM_ITERATIONS = 1  # Number of times to prune the network
-EXPERIMENT_NAME = 'still_working_test'
+NUM_ITERATIONS = constants.NUM_ITERATIONS
+EXPERIMENT_NAME = constants.EXPERIMENT_NAME
+#NUM_ITERATIONS = 1  # Number of times to prune the network
+#EXPERIMENT_NAME = 'faster2x2'
 
 logger = get_logger('main')
 

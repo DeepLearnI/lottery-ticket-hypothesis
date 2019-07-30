@@ -52,12 +52,12 @@ class ModelFc(model_base.ModelBase):
     for i, (units, activation) in enumerate(hyperparameters['layers']):
 
       if i < 2: # first two layers are convolutional
-          print("Creating convolutional layers")
+          print("Creating convolutional layer {}".format(i))
           #print("this is conv layer {}".format(i))
           current_layer = self.Conv2D('layer{}'.format(i),
                                       inputs=current_layer,
                                       channels=units,
-                                      kernel_size=(3,3),
+                                      kernel_size=(5,5),
                                       activation=activation,
                                       kernel_initializer=tf.initializers.he_normal()
                                       )

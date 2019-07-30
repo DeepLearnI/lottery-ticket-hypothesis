@@ -86,7 +86,7 @@ class ModelBase(object):
                inputs,
                channels,
                kernel_size,
-               strides=(1, 1, 1, 1),  # batch, h, w, channel
+               strides=(1, 2, 2, 1),  # batch, h, w, channel
                activation=None,
                use_bias=True,
                kernel_initializer=None):

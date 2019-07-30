@@ -76,13 +76,13 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
         """Records summaries obtained from evaluating the network.
 
         Args:
-          iteration: The current training iteration as an integer.
+          iteration: The current training step as an integer.
           records: A list of records to be written.
           fp: A file to which the records should be logged in an easier-to-parse
             format than the tensorflow summary files.
         """
         if params.get('save_summaries', False):
-            log = ['iteration', str(iteration)]
+            log = ['step', str(iteration)]
             for record in records:
                 # Log to tensorflow summaries for tensorboard.
                 writer.add_summary(record, iteration)
@@ -116,7 +116,7 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
     # simultaneously.
     def training_loop():
         """The main training loop encapsulated in a function."""
-        iteration = 0
+        step = 0
         epoch = 0
         print("Running training loop")
         while True:
@@ -124,7 +124,8 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
             epoch += 1
 
             # End training if we have passed the epoch limit.
-            if training_len[0] == 'epochs' and epoch > NUM_EPOCHS: #training_len[1]:
+            #if training_len[0] == 'epochs' and epoch > NUM_EPOCHS: #training_len[1]:
+            if epoch > NUM_EPOCHS: #training_len[1]:
                 return
 
             start_time = time.time()
@@ -132,10 +133,11 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
             print("Epoch: {} out of {}".format(epoch, NUM_EPOCHS)) #training_len[1]))
             while True:
                 try:
-                    iteration += 1
+                    step += 1
 
-                    # End training if we have passed the iteration limit.
-                    if training_len[0] == 'iterations' and iteration > training_len[1]:
+                    # End training if we have passed the step limit.
+                    # training_len = ('iterations', 50000)
+                    if training_len[0] == 'iterations' and step > training_len[1]:
                         return
 
                     # Train.
@@ -143,15 +145,15 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
                     step_time = time.time()
                     records = sess.run([optimize] + model.train_summaries,
                                        {dataset.handle: train_handle})[1:]
-                    record_summaries(iteration, records, train_file)
+                    record_summaries(step, records, train_file)
 
-                    print(iteration)
-                    if iteration % 100 == 0:
-                        logger.info("Step {} of {} - Time per step: {}".format(iteration, training_len[1], time.time() - step_time))
+                    #print(step)
+                    if step % 100 == 0:
+                        logger.info("Step {} of {} - Time per step: {}".format(step, training_len[1], time.time() - step_time))
 
                     # Collect test and validation data if applicable.
-                    collect_test_summaries(iteration)
-                    collect_validate_summaries(iteration)
+                    collect_test_summaries(step)
+                    collect_validate_summaries(step)
 
                 except tf.errors.OutOfRangeError:
                     break
