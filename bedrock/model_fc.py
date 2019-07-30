@@ -57,7 +57,7 @@ class ModelFc(model_base.ModelBase):
           current_layer = self.Conv2D('layer{}'.format(i),
                                       inputs=current_layer,
                                       channels=units,
-                                      kernel_size=(5,5),
+                                      kernel_size=(3,3),
                                       activation=activation,
                                       kernel_initializer=tf.initializers.he_normal()
                                       )

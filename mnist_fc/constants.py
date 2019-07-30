@@ -31,7 +31,7 @@ NUM_EPOCHS = 1
 TRAINING_LEN = ('iterations', 50000)
 
 NUM_ITERATIONS = 1  # Number of times to prune the network
-EXPERIMENT_NAME = 'faster2x2'
+EXPERIMENT_NAME = 'wheredoesstuffwrite'
 
 EXPERIMENT_PATH = 'mnist_fc_data'
 MNIST_LOCATION = '/home/rm/lottery_ticket/mnist_fc/datasets/mnist' #'datasets/mnist'  #'/home/rm/lottery_ticket/mnist_fc/datasets/mnist'

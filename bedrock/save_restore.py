@@ -26,8 +26,6 @@ import numpy as np
 import six
 import tensorflow as tf
 
-import foundations as f9s
-
 
 def save_network(filename, weights_dict):
     """Save the parameters of a neural network.
@@ -188,12 +186,5 @@ def write_log(data, directory, name='test'):
                  str(acc))))
             fp.write('\n')
 
-    # Log metrics in Foundations GUI
-    log_metrics_f9s(data, name)
 
-def log_metrics_f9s(data, name):
-    f9s.log_metric("mode", name)
-    f9s.log_metric("loss", data['loss'])
-    f9s.log_metric("step", data['iteration'])
-    f9s.log_metric("accuracy", data['accuracy'])
 

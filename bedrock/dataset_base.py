@@ -15,7 +15,7 @@
 """A base class for managing datasets."""
 
 import tensorflow as tf
-print("ugh")
+
 
 class DatasetSplit(object):
   """A split of a dataset, for example just the training data."""

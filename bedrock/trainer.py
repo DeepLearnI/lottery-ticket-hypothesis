@@ -21,6 +21,8 @@ import time
 from utils import get_logger
 from mnist_fc.constants import NUM_EPOCHS
 
+import foundations as f9s
+
 logger = get_logger('Train')
 
 
@@ -86,13 +88,16 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
             for record in records:
                 # Log to tensorflow summaries for tensorboard.
                 writer.add_summary(record, iteration)
-
                 # Log to text file for convenience.
                 summary_proto = tf.Summary()
                 summary_proto.ParseFromString(record)
                 value = summary_proto.value[0]
                 log += [value.tag, str(value.simple_value)]
             fp.write(','.join(log) + '\n')
+
+            #print(log)
+            f9s.log_metric("ugh", log)
+
 
     def collect_test_summaries(iteration):
         if (params.get('save_summaries', False) and
@@ -102,6 +107,7 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
             records = sess.run(model.test_summaries, {dataset.handle: test_handle})
             record_summaries(iteration, records, test_file)
 
+
     def collect_validate_summaries(iteration):
         if (params.get('save_summaries', False) and
                 'validate_interval' in params and
@@ -110,6 +116,13 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
             records = sess.run(model.validate_summaries,
                                {dataset.handle: validate_handle})
             record_summaries(iteration, records, validate_file)
+
+    '''
+        # Log metrics in Foundations GUI
+    log_metrics_f9s(data, name)
+
+
+    '''
 
     # Train for the specified number of epochs. This behavior is encapsulated
     # in a function so that it is possible to break out of multiple loops
