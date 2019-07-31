@@ -23,18 +23,28 @@ import os
 from bedrock import paths
 import tensorflow as tf
 
+import foundations as f9s
+
 HYPERPARAMETERS = {'layers': [(256, tf.nn.relu), (128, tf.nn.relu), (64, tf.nn.relu), (32, tf.nn.relu), (10, None)]}
 #FASHIONMNIST_LOCATION = locations.FASHIONMNIST_LOCATION
 OPTIMIZER_FN = functools.partial(tf.train.GradientDescentOptimizer, .1)
 PRUNE_PERCENTS = {'layer0': .3, 'layer1': .2, 'layer2': .1, 'layer3': .1, 'layer4': .1}
 NUM_EPOCHS = 1
 TRAINING_LEN = ('iterations', 50000)
-
 NUM_ITERATIONS = 1  # Number of times to prune the network
 EXPERIMENT_NAME = 'wheredoesstuffwrite'
 
 EXPERIMENT_PATH = 'mnist_fc_data'
 MNIST_LOCATION = '/home/rm/lottery_ticket/mnist_fc/datasets/mnist' #'datasets/mnist'  #'/home/rm/lottery_ticket/mnist_fc/datasets/mnist'
+
+# This logs the dictionary elements into the GUI under Parameters
+{f9s.log_param('layer_sizes', value) for key, value in HYPERPARAMETERS.items()}
+{f9s.log_param('prune_pct_' + str(key), value) for key, value in PRUNE_PERCENTS.items()}
+f9s.log_param('epochs', NUM_EPOCHS)
+f9s.log_param('iterations', TRAINING_LEN[1])
+f9s.log_param('times_pruned', NUM_ITERATIONS)
+f9s.log_param('tag', EXPERIMENT_NAME)
+
 
 def graph(category, filename):
   return os.path.join(EXPERIMENT_PATH, 'graphs', category, filename)

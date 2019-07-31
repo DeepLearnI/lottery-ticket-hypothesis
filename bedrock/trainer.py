@@ -85,6 +85,8 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
         """
         if params.get('save_summaries', False):
             log = ['step', str(iteration)]
+            #f9s.log_metric('step', str(iteration))
+
             for record in records:
                 # Log to tensorflow summaries for tensorboard.
                 writer.add_summary(record, iteration)
@@ -93,10 +95,12 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
                 summary_proto.ParseFromString(record)
                 value = summary_proto.value[0]
                 log += [value.tag, str(value.simple_value)]
-            fp.write(','.join(log) + '\n')
 
-            #print(log)
-            f9s.log_metric("ugh", log)
+            #print(value.tag)
+            #git commprint(value.simple_value)
+            f9s.log_metric(value.tag, str(value.simple_value))
+
+            fp.write(','.join(log) + '\n')
 
 
     def collect_test_summaries(iteration):

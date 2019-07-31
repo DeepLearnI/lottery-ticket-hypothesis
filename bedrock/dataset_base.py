@@ -21,8 +21,8 @@ class DatasetSplit(object):
   """A split of a dataset, for example just the training data."""
 
   def __init__(self, data, batch_size=None, shuffle=False, seed=None):
-    #size = data[0].shape[0]
-    size = 4096
+    size = data[0].shape[0]
+    #size = 4096 # HN - can change if memory intensive
 
     # Build the dataset.
     self._dataset = tf.data.Dataset.from_tensor_slices(data)
