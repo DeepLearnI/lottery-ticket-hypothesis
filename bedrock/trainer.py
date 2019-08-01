@@ -94,7 +94,7 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
                 summary_proto = tf.Summary()
                 summary_proto.ParseFromString(record)
                 value = summary_proto.value[0]
-                log += [value.tag, str(value.simple_value)]
+                #log += [value.tag, str(value.simple_value)]
 
             #print(value.tag)
             #git commprint(value.simple_value)
