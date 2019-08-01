@@ -122,6 +122,48 @@ class ModelBase(object):
             return activation(output)
         else:
             return output
+        
+    def Conv2DTranspose(self,
+                        name,
+                        inputs,
+                        channels,
+                        kernel_size,
+                        strides=(1, 1, 1, 1),
+                        activation=None,
+                        use_bias=True,
+                        kernel_initializer=None):
+        if name in self._presets:
+            kernel_initializer = tf.constant_initializer(self._presets[name])
+        # Create the weights.
+        weights = tf.get_variable(name=name + '_w',
+                                  shape=[kernel_size[0], kernel_size[1], inputs.shape[-1], channels],
+                                  initializer=kernel_initializer)
+
+        # Mask the layer as necessary.
+        if name in self._masks:
+            mask_initializer = tf.constant_initializer(self._masks[name])
+            mask = tf.get_variable(
+                name=name + '_m',
+                shape=[kernel_size[0], kernel_size[1], inputs.shape[-1], channels], #[inputs.shape[1], units],
+                initializer=mask_initializer,
+                trainable=False)
+            weights = tf.multiply(weights, mask)
+
+        self._weights[name] = weights
+        # Compute the output.
+        output = tf.nn.conv2d_transpose(inputs, weights, strides=strides, padding="SAME")
+
+        # Add bias if applicable.
+        if use_bias:
+            bias = tf.get_variable(
+                name=name + '_b', shape=[channels], initializer=tf.zeros_initializer())
+            output += bias
+
+        # Activate.
+        if activation:
+            return activation(output)
+        else:
+            return output
 
     def dense_layer(self,
                     name,
@@ -167,6 +209,11 @@ class ModelBase(object):
             return activation(output)
         else:
             return output
+        
+    def create_loss(self, label_placeholder, output_logits):
+        self._loss = tf.reduce_mean(
+            tf.nn.softmax_cross_entropy_with_logits_v2(
+                labels=label_placeholder, logits=output_logits))
 
     def create_loss_and_accuracy(self, label_placeholder, output_logits):
         """Creates loss and accuracy once a child class has created the network."""
