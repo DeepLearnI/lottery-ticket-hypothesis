@@ -19,7 +19,53 @@ import tensorflow as tf
 from bedrock import dataset_base
 from bedrock import save_restore
 import numpy as np
+import os
+from tqdm import tqdm
+from keras.preprocessing.image import img_to_array, load_img
+from skimage.transform import resize
+from sklearn.model_selection import train_test_split
 
+class DatasetSalt(dataset_base.DatasetBase):
+  def __init__(self,
+               train_order_seed=None):
+    
+    im_width = 128
+    im_height = 128
+    
+    path = self.download_data()
+    ids = os.listdir(path)
+    print("No. of images = ", len(ids))
+
+    X = np.zeros((len(ids), im_height, im_width, 1), dtype=np.float32)
+    y = np.zeros((len(ids), im_height, im_width, 1), dtype=np.float32)
+
+    for n, id_ in tqdm(enumerate(ids), total=len(ids)):
+      # Load images
+      img = load_img(os.path.join(path, id_), grayscale=True)
+      x_img = img_to_array(img)
+      x_img = resize(x_img, (128, 128, 1), mode='constant', preserve_range=True)
+      # Load masks
+      mask = img_to_array(load_img("masks/" + id_, grayscale=True))
+      mask = resize(mask, (128, 128, 1), mode='constant', preserve_range=True)
+      # Save images
+      X[n] = x_img / 255.0
+      y[n] = mask / 255.0
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=train_order_seed)
+    
+    # Prepare the dataset.
+    super(DatasetSalt, self).__init__(
+      (X_train, y_train),
+      64, (X_test, y_test),
+      train_order_seed=train_order_seed)
+    
+  def download_data(self):
+    import urllib.request
+  
+    data_path = "/tmp/creditcard_train.csv"
+  
+    urllib.request.urlretrieve("https://www.dropbox.com/s/3dl28vfsh6lo8s9/creditcard_train.csv?dl=1", data_path)
+    return data_path
 
 
 class DatasetMnist(dataset_base.DatasetBase):

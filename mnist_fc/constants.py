@@ -28,7 +28,17 @@ import foundations as f9s
 HYPERPARAMETERS = {'layers': [(256, tf.nn.relu), (128, tf.nn.relu), (64, tf.nn.relu), (32, tf.nn.relu), (10, None)]}
 #FASHIONMNIST_LOCATION = locations.FASHIONMNIST_LOCATION
 OPTIMIZER_FN = functools.partial(tf.train.GradientDescentOptimizer, .1)
-PRUNE_PERCENTS = {'layer0': .3, 'layer1': .2, 'layer2': .1, 'layer3': .1, 'layer4': .1}
+PRUNE_PERCENTS = {'encoder_conv_0_conv1': .3, 'encoder_conv_0_conv2': .2,
+                  'encoder_conv_1_conv1': .3, 'encoder_conv_1_conv2': .3,
+                  'encoder_conv_2_conv1': .3, 'encoder_conv_2_conv2': .3,
+                  'encoder_conv_3_conv1': .3, 'encoder_conv_3_conv2': .3,
+                  'bottom_layer_conv1': .1, 'bottom_layer_conv2': .2,
+                  'transpose_conv2d_5': .3, 'decoder_conv_5_conv1': .3, 'decoder_conv_5_conv2': .3,
+                  'transpose_conv2d_6': .3, 'decoder_conv_6_conv1': .3, 'decoder_conv_6_conv2': .3,
+                  'transpose_conv2d_7': .3, 'decoder_conv_7_conv1': .3, 'decoder_conv_7_conv2': .3,
+                  'transpose_conv2d_8': .3, 'decoder_conv_8_conv1': .3, 'decoder_conv_8_conv2': .3,
+                  'output_layer': .1}
+
 NUM_EPOCHS = 1
 TRAINING_LEN = ('iterations', 50000)
 NUM_ITERATIONS = 1  # Number of times to prune the network
