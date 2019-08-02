@@ -122,13 +122,14 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
                                {dataset.handle: validate_handle})
             record_summaries(iteration, records, validate_file)
 
-            return records
-
     def save_image(image, path, is_input=False):
         plt.figure(figsize=(14, 10))
 
-        plt.imshow(image[0].squeeze(), cmap='gray', vmin=0, vmax=255)
-        plt.savefig(path)
+        if is_input:
+            plt.imshow(image[0].squeeze(), cmap='gray')
+        else:
+            plt.imshow(image[0].squeeze())
+        plt.savefig(path, format='png')
         return path
 
     # Train for the specified number of epochs. This behavior is encapsulated
@@ -175,24 +176,21 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
                     if step % 1000 == 0:
                         logger.info("Step {} - Loss: {} - Time per step: {}".format(step, loss, time.time() - step_time))
 
-                    # Collect test and validation data if applicable.
                     collect_test_summaries(step)
-                    val_loss = collect_validate_summaries(step)
 
                 except tf.errors.OutOfRangeError:
                     break
             logger.info("Time for epoch: {}".format(time.time() - start_time))
 
-        inputs_artifact_path = save_image(inputs, 'inputs_{}'.format(iteration), is_input=True)
-        targets_artifact_path = save_image(targets, 'targets_{}'.format(iteration))
-        outputs_artifact_path = save_image(outputs, 'outputs_{}'.format(iteration))
+        inputs_artifact_path = save_image(inputs, 'inputs_{}'.format(iteration) + '.png', is_input=True)
+        targets_artifact_path = save_image(targets, 'targets_{}'.format(iteration) + '.png')
+        outputs_artifact_path = save_image(outputs, 'outputs_{}'.format(iteration) + '.png')
 
         tensorboard_path = 'lottery_ticket/{}/unet/summaries/'.format(iteration)
         tensorboard_file = os.path.join(tensorboard_path, os.listdir(tensorboard_path)[0])
         f9s.save_artifact(tensorboard_file, 'tensorboard_{}'.format(iteration))
 
-        f9s.log_metric('loss_{}'.format(iteration), loss)
-        f9s.log_metric('val_loss_{}'.format(iteration), val_loss)
+        f9s.log_metric('loss_{}'.format(iteration), float(loss))
 
         f9s.save_artifact(inputs_artifact_path, 'inputs_{}'.format(iteration))
         f9s.save_artifact(targets_artifact_path, 'targets_{}'.format(iteration))

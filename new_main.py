@@ -30,8 +30,6 @@ import os
 # TODO (cuz log artifacts will probably not be working until then)
 # TODO pass in pruning percentages as the parameters to track
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-
 NUM_ITERATIONS = constants.NUM_ITERATIONS
 EXPERIMENT_NAME = constants.EXPERIMENT_NAME
 

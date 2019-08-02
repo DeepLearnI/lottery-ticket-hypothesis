@@ -25,6 +25,7 @@ from tensorflow.keras.preprocessing.image import img_to_array, load_img
 from skimage.transform import resize
 from sklearn.model_selection import train_test_split
 import zipfile
+from mnist_fc.constants import BATCH_SIZE
 
 class DatasetSalt(dataset_base.DatasetBase):
   def __init__(self,
@@ -61,7 +62,7 @@ class DatasetSalt(dataset_base.DatasetBase):
     # Prepare the dataset.
     super(DatasetSalt, self).__init__(
       (X_train, y_train),
-      32, (X_test, y_test),
+      BATCH_SIZE, (X_test, y_test),
       train_order_seed=train_order_seed)
     
   def download_data(self):
