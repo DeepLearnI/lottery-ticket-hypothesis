@@ -70,6 +70,9 @@ class ModelU(model_base.ModelBase):
         current_layer = self.decoder_block(8, current_layer, skip1, layers[8])
         
         current_layer = self.Conv2D('output_layer', current_layer, layers[9], kernel_size=(1,1))
+        self.outputs = tf.nn.sigmoid(current_layer)
+        self.targets = label_placeholder
+        self.inputs = input_placeholder
         
         # Compute the loss and accuracy.
         self.create_loss(label_placeholder, current_layer)  # params (label_placeholder, output_logits)

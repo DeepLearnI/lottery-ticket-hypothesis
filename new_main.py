@@ -39,7 +39,7 @@ logger = get_logger('main')
 
 
 def train(output_dir,
-          mnist_location=constants.MNIST_LOCATION,
+          mnist_location=None,#constants.MNIST_LOCATION,
           training_len=constants.TRAINING_LEN,
           iterations=NUM_ITERATIONS,
           experiment_name=EXPERIMENT_NAME,
@@ -100,6 +100,7 @@ def train(output_dir,
             model,
             constants.OPTIMIZER_FN,
             training_len,
+            iteration=level,
             output_dir=paths.run(output_dir, level, experiment_name),
             **params)
 

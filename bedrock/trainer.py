@@ -21,12 +21,17 @@ import time
 from utils import get_logger
 from mnist_fc.constants import NUM_EPOCHS
 
-# import foundations as f9s
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+
+#import foundations as f9s
 
 logger = get_logger('Train')
 
 
-def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
+def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_dir,
           **params):
     """Train a model on a dataset.
 
@@ -95,8 +100,6 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
                 value = summary_proto.value[0]
                 log += [value.tag, str(value.simple_value)]
 
-            #print(value.tag)
-            #git commprint(value.simple_value)
             #f9s.log_metric(value.tag, str(value.simple_value))
 
             fp.write(','.join(log) + '\n')
@@ -120,17 +123,19 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
                                {dataset.handle: validate_handle})
             record_summaries(iteration, records, validate_file)
 
-    '''
-        # Log metrics in Foundations GUI
-    log_metrics_f9s(data, name)
+            return records
 
+    def save_image(image, path):
+        plt.figure(figsize=(14, 10))
 
-    '''
+        plt.imshow(image.squeeze(), cmap='gray', vmin=0, vmax=255)
+        plt.savefig(path)
+
 
     # Train for the specified number of epochs. This behavior is encapsulated
     # in a function so that it is possible to break out of multiple loops
     # simultaneously.
-    def training_loop():
+    def training_loop(iteration):
         """The main training loop encapsulated in a function."""
         step = 0
         epoch = 0
@@ -142,7 +147,7 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
             # End training if we have passed the epoch limit.
             #if training_len[0] == 'epochs' and epoch > NUM_EPOCHS: #training_len[1]:
             if epoch > NUM_EPOCHS: #training_len[1]:
-                return
+                break
 
             start_time = time.time()
             # One training epoch.
@@ -159,10 +164,11 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
                     # Train.
 
                     step_time = time.time()
-                    records = sess.run([optimize, model.loss] + model.train_summaries,
+                    records = sess.run([optimize, model.loss, model.targets, model.outputs, model.inputs] + model.train_summaries,
                                        {dataset.handle: train_handle})[1:]
-                    loss = records[0]
-                    records = records[1:]
+                    loss, targets, outputs, inputs = records[0], records[1], records[2], records[3]
+
+                    records = records[4:]
 
                     record_summaries(step, records, train_file)
 
@@ -172,16 +178,27 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
 
                     # Collect test and validation data if applicable.
                     collect_test_summaries(step)
-                    collect_validate_summaries(step)
+                    val_loss = collect_validate_summaries(step)
 
                 except tf.errors.OutOfRangeError:
                     break
+            logger.info("Time for epoch: {}".format(time.time() - start_time))
 
-        logger.info("Time for epoch: {}".format(time.time() - start_time))
+        inputs_artifact_path = save_image(inputs, 'inputs_{}'.format(iteration))
+        targets_artifact_path = save_image(targets, 'targets_{}'.format(iteration))
+        outputs_artifact_path = save_image(outputs, 'outputs_{}'.format(iteration))
+
+        f9s.log_metric('loss_{}'.format(iteration), loss)
+        f9s.log_metric('val_loss_{}'.format(iteration), val_loss)
+        f9s.save_artifact('inputs_{}'.format(iteration), inputs_artifact_path)
+        f9s.save_artifact('targets_{}'.format(iteration), targets_artifact_path)
+        f9s.save_artifact('outputs_{}'.format(iteration), outputs_artifact_path)
+
         # End of epoch handling.
+        return
 
     # Run the training loop.
-    training_loop()
+    training_loop(iteration)
 
     # Clean up.
     if params.get('save_summaries', False):
