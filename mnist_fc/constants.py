@@ -22,16 +22,11 @@ import functools
 import os
 from bedrock import paths
 import tensorflow as tf
+import numpy as np
 
-#import foundations as f9s
+import foundations as f9s
 
 HYPERPARAMETERS = {'layers': [16, 32, 64, 128, 256, 128, 64, 32, 16, 1]}
-
-# 16, tf.nn.relu), 32, tf.nn.relu), (64, tf.nn.relu), (128, tf.nn.relu), (256, tf.nn.relu),
-#                           (128, tf.nn.relu), (64, tf.nn.relu), (32, tf.nn.relu), (16, tf.nn.relu), (1, None)]}
-
-#FASHIONMNIST_LOCATION = locations.FASHIONMNIST_LOCATION
-#OPTIMIZER_FN = functools.partial(tf.train.GradientDescentOptimizer, .1)
 
 OPTIMIZER_FN = functools.partial(tf.train.AdamOptimizer, .001)
 PRUNE_PERCENTS = {'encoder_conv_0_conv1': .1, 'encoder_conv_0_conv2': .1,
@@ -51,13 +46,34 @@ NUM_ITERATIONS = 3  # Number of times to prune the network
 EXPERIMENT_NAME = 'unet'
 EXPERIMENT_PATH = 'unet'
 
+PRUNE_PERCENTS, HYPERPARAMETERS, OPTIMIZER_FN = search()
 
 # This logs the dictionary elements into the GUI under Parameters
 params_dict = {**HYPERPARAMETERS, **PRUNE_PERCENTS,
                'epochs': NUM_EPOCHS,
                'iterations': TRAINING_LEN[1], 'times_pruned': NUM_ITERATIONS}
 
-#f9s.log_params(params_dict)
+f9s.log_params(params_dict)
+
+def search():
+  PRUNE_PERCENTS = {'encoder_conv_0_conv1': float(np.random.uniform(0.1, 0.3)), 'encoder_conv_0_conv2': float(np.random.uniform(0.1, 0.3)),
+                  'encoder_conv_1_conv1': float(np.random.uniform(0.1, 0.3)), 'encoder_conv_1_conv2': float(np.random.uniform(0.1, 0.3)),
+                  'encoder_conv_2_conv1': float(np.random.uniform(0.1, 0.3)), 'encoder_conv_2_conv2': float(np.random.uniform(0.1, 0.3)),
+                  'encoder_conv_3_conv1': float(np.random.uniform(0.1, 0.3)), 'encoder_conv_3_conv2': float(np.random.uniform(0.1, 0.3)),
+                  'bottom_layer_conv1': float(np.random.uniform(0.1, 0.3)), 'bottom_layer_conv2': float(np.random.uniform(0.1, 0.3)),
+                  'transpose_conv2d_5': float(np.random.uniform(0.1, 0.3)), 'decoder_conv_5_conv1': float(np.random.uniform(0.1, 0.3)), 'decoder_conv_5_conv2': float(np.random.uniform(0.1, 0.3)),
+                  'transpose_conv2d_6': float(np.random.uniform(0.1, 0.3)), 'decoder_conv_6_conv1': float(np.random.uniform(0.1, 0.3)), 'decoder_conv_6_conv2': float(np.random.uniform(0.1, 0.3)),
+                  'transpose_conv2d_7': float(np.random.uniform(0.1, 0.3)), 'decoder_conv_7_conv1': float(np.random.uniform(0.1, 0.3)), 'decoder_conv_7_conv2': float(np.random.uniform(0.1, 0.3)),
+                  'transpose_conv2d_8': float(np.random.uniform(0.1, 0.3)), 'decoder_conv_8_conv1': float(np.random.uniform(0.1, 0.3)), 'decoder_conv_8_conv2': float(np.random.uniform(0.1, 0.3)),
+                  'output_layer': .1}
+
+  HYPERPARAMETERS = {'layers': [int(np.random.choice([16, 32, 64])), int(np.random.choice([16, 32, 64])), int(np.random.choice([16, 32, 64])), 
+                                128, 256, 128, 
+                                int(np.random.choice([16, 32, 64])), int(np.random.choice([16, 32, 64])), int(np.random.choice([16, 32, 64])), 
+                                1]}
+  OPTIMIZER_FN = functools.partial(tf.train.AdamOptimizer, float(np.random.uniform(0.0001, 0.001)))
+  return PRUNE_PERCENTS, HYPERPARAMETERS, OPTIMIZER_FN
+
 
 def graph(category, filename):
   return os.path.join(EXPERIMENT_PATH, 'graphs', category, filename)

@@ -22,13 +22,10 @@ import tensorflow as tf
 import time
 from utils import get_logger
 from mnist_fc.constants import NUM_EPOCHS
-
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-
-
-#import foundations as f9s
+import foundations as f9s
 
 logger = get_logger('Train')
 
@@ -127,12 +124,12 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
 
             return records
 
-    def save_image(image, path):
+    def save_image(image, path, is_input=False):
         plt.figure(figsize=(14, 10))
 
         plt.imshow(image[0].squeeze(), cmap='gray', vmin=0, vmax=255)
         plt.savefig(path)
-
+        return path
 
     # Train for the specified number of epochs. This behavior is encapsulated
     # in a function so that it is possible to break out of multiple loops
@@ -186,21 +183,20 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
                     break
             logger.info("Time for epoch: {}".format(time.time() - start_time))
 
-        inputs_artifact_path = save_image(inputs, 'inputs_{}'.format(iteration))
+        inputs_artifact_path = save_image(inputs, 'inputs_{}'.format(iteration), is_input=True)
         targets_artifact_path = save_image(targets, 'targets_{}'.format(iteration))
         outputs_artifact_path = save_image(outputs, 'outputs_{}'.format(iteration))
 
         tensorboard_path = 'lottery_ticket/{}/unet/summaries/'.format(iteration)
         tensorboard_file = os.path.join(tensorboard_path, os.listdir(tensorboard_path)[0])
-        f9s.save_artifact('tensorboard_{}'.format(iteration), tensorboard_file)
+        f9s.save_artifact(tensorboard_file, 'tensorboard_{}'.format(iteration))
 
         f9s.log_metric('loss_{}'.format(iteration), loss)
         f9s.log_metric('val_loss_{}'.format(iteration), val_loss)
-        f9s.save_artifact('inputs_{}'.format(iteration), inputs_artifact_path)
-        f9s.save_artifact('targets_{}'.format(iteration), targets_artifact_path)
-        f9s.save_artifact('outputs_{}'.format(iteration), outputs_artifact_path)
 
-
+        f9s.save_artifact(inputs_artifact_path, 'inputs_{}'.format(iteration))
+        f9s.save_artifact(targets_artifact_path, 'targets_{}'.format(iteration))
+        f9s.save_artifact(outputs_artifact_path, 'outputs_{}'.format(iteration))
 
         # End of epoch handling.
         return
