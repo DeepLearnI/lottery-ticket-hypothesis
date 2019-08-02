@@ -80,7 +80,11 @@ def train(output_dir,
             permute_labels=permute_labels,
             train_order_seed=train_order_seed)
 
-    make_model = functools.partial(model_fc.ModelFc, constants.HYPERPARAMETERS)
+    def make_unet_dataset():
+        return dataset_mnist.DatasetSalt(train_order_seed)
+
+    make_model = functools.partial(model_fc.ModelU, constants.HYPERPARAMETERS)
+                                   #ModelFc, constants.HYPERPARAMETERS)
 
     # Define a training function.
     def train_model(sess, level, dataset, model):
@@ -105,7 +109,7 @@ def train(output_dir,
 
     logger.info('Run the experiment.')
     experiment.experiment(
-        make_dataset,
+        make_unet_dataset,
         make_model,
         train_model,
         prune_masks,

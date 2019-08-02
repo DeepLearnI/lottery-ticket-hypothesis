@@ -1,2 +1,4 @@
 tqdm
-zipfile
+zipfile36
+scikit-image
+scikit-learn

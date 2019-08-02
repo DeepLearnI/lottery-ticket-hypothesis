@@ -86,7 +86,7 @@ class ModelBase(object):
                inputs,
                channels,
                kernel_size,
-               strides=(1, 2, 2, 1),  # batch, h, w, channel
+               strides=(1, 1, 1, 1),  # batch, h, w, channel
                activation=None,
                use_bias=True,
                kernel_initializer=None):
@@ -151,7 +151,13 @@ class ModelBase(object):
 
         self._weights[name] = weights
         # Compute the output.
-        output = tf.nn.conv2d_transpose(inputs, weights, strides=strides, padding="SAME")
+        conv2d_transpose = tf.layers.Conv2DTranspose(filters=weights.shape[-1],
+                                                     kernel_size=(weights.shape[0], weights.shape[1]),
+                                                     strides=(strides[1], strides[2]),
+                                                     padding="same",
+                                                     )
+        conv2d_transpose.kernel = weights
+        output = conv2d_transpose(inputs) #, weights, strides=strides, padding="SAME")
 
         # Add bias if applicable.
         if use_bias:
@@ -212,8 +218,19 @@ class ModelBase(object):
         
     def create_loss(self, label_placeholder, output_logits):
         self._loss = tf.reduce_mean(
-            tf.nn.softmax_cross_entropy_with_logits_v2(
+            tf.nn.sigmoid_cross_entropy_with_logits(
                 labels=label_placeholder, logits=output_logits))
+
+        # Create summaries for loss and accuracy.
+        self._train_summaries = [
+            tf.summary.scalar('train_loss', self._loss),
+        ]
+        self._test_summaries = [
+            tf.summary.scalar('test_loss', self._loss),
+        ]
+        self._validate_summaries = [
+            tf.summary.scalar('validate_loss', self._loss),
+        ]
 
     def create_loss_and_accuracy(self, label_placeholder, output_logits):
         """Creates loss and accuracy once a child class has created the network."""

@@ -23,11 +23,17 @@ import os
 from bedrock import paths
 import tensorflow as tf
 
-import foundations as f9s
+#import foundations as f9s
 
-HYPERPARAMETERS = {'layers': [(256, tf.nn.relu), (128, tf.nn.relu), (64, tf.nn.relu), (32, tf.nn.relu), (10, None)]}
+HYPERPARAMETERS = {'layers': [16, 32, 64, 128, 256, 128, 64, 32, 16, 1]}
+
+# 16, tf.nn.relu), 32, tf.nn.relu), (64, tf.nn.relu), (128, tf.nn.relu), (256, tf.nn.relu),
+#                           (128, tf.nn.relu), (64, tf.nn.relu), (32, tf.nn.relu), (16, tf.nn.relu), (1, None)]}
+
 #FASHIONMNIST_LOCATION = locations.FASHIONMNIST_LOCATION
-OPTIMIZER_FN = functools.partial(tf.train.GradientDescentOptimizer, .1)
+#OPTIMIZER_FN = functools.partial(tf.train.GradientDescentOptimizer, .1)
+
+OPTIMIZER_FN = functools.partial(tf.train.AdamOptimizer, .001)
 PRUNE_PERCENTS = {'encoder_conv_0_conv1': .3, 'encoder_conv_0_conv2': .2,
                   'encoder_conv_1_conv1': .3, 'encoder_conv_1_conv2': .3,
                   'encoder_conv_2_conv1': .3, 'encoder_conv_2_conv2': .3,
@@ -39,21 +45,21 @@ PRUNE_PERCENTS = {'encoder_conv_0_conv1': .3, 'encoder_conv_0_conv2': .2,
                   'transpose_conv2d_8': .3, 'decoder_conv_8_conv1': .3, 'decoder_conv_8_conv2': .3,
                   'output_layer': .1}
 
-NUM_EPOCHS = 1
+NUM_EPOCHS = 30
 TRAINING_LEN = ('iterations', 50000)
 NUM_ITERATIONS = 1  # Number of times to prune the network
-EXPERIMENT_NAME = 'wheredoesstuffwrite'
+EXPERIMENT_NAME = 'unet'
 
 EXPERIMENT_PATH = 'mnist_fc_data'
 MNIST_LOCATION = '/home/rm/lottery_ticket/mnist_fc/datasets/mnist' #'datasets/mnist'  #'/home/rm/lottery_ticket/mnist_fc/datasets/mnist'
 
-# This logs the dictionary elements into the GUI under Parameters
-{f9s.log_param('layer_sizes', value) for key, value in HYPERPARAMETERS.items()}
-{f9s.log_param('prune_pct_' + str(key), value) for key, value in PRUNE_PERCENTS.items()}
-f9s.log_param('epochs', NUM_EPOCHS)
-f9s.log_param('iterations', TRAINING_LEN[1])
-f9s.log_param('times_pruned', NUM_ITERATIONS)
-f9s.log_param('tag', EXPERIMENT_NAME)
+# # This logs the dictionary elements into the GUI under Parameters
+# {f9s.log_param('layer_sizes', value) for key, value in HYPERPARAMETERS.items()}
+# {f9s.log_param('prune_pct_' + str(key), value) for key, value in PRUNE_PERCENTS.items()}
+# f9s.log_param('epochs', NUM_EPOCHS)
+# f9s.log_param('iterations', TRAINING_LEN[1])
+# f9s.log_param('times_pruned', NUM_ITERATIONS)
+# f9s.log_param('tag', EXPERIMENT_NAME)
 
 
 def graph(category, filename):

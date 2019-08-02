@@ -21,7 +21,7 @@ import time
 from utils import get_logger
 from mnist_fc.constants import NUM_EPOCHS
 
-import foundations as f9s
+# import foundations as f9s
 
 logger = get_logger('Train')
 
@@ -85,7 +85,6 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
         """
         if params.get('save_summaries', False):
             log = ['step', str(iteration)]
-            #f9s.log_metric('step', str(iteration))
 
             for record in records:
                 # Log to tensorflow summaries for tensorboard.
@@ -94,11 +93,11 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
                 summary_proto = tf.Summary()
                 summary_proto.ParseFromString(record)
                 value = summary_proto.value[0]
-                #log += [value.tag, str(value.simple_value)]
+                log += [value.tag, str(value.simple_value)]
 
             #print(value.tag)
             #git commprint(value.simple_value)
-            f9s.log_metric(value.tag, str(value.simple_value))
+            #f9s.log_metric(value.tag, str(value.simple_value))
 
             fp.write(','.join(log) + '\n')
 
@@ -160,13 +159,16 @@ def train(sess, dataset, model, optimizer_fn, training_len, output_dir,
                     # Train.
 
                     step_time = time.time()
-                    records = sess.run([optimize] + model.train_summaries,
+                    records = sess.run([optimize, model.loss] + model.train_summaries,
                                        {dataset.handle: train_handle})[1:]
+                    loss = records[0]
+                    records = records[1:]
+
                     record_summaries(step, records, train_file)
 
                     #print(step)
-                    if step % 100 == 0:
-                        logger.info("Step {} of {} - Time per step: {}".format(step, training_len[1], time.time() - step_time))
+                    if step % 1000 == 0:
+                        logger.info("Step {} - Loss: {} - Time per step: {}".format(step, loss, time.time() - step_time))
 
                     # Collect test and validation data if applicable.
                     collect_test_summaries(step)

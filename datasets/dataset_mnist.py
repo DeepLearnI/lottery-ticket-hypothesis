@@ -21,9 +21,10 @@ from bedrock import save_restore
 import numpy as np
 import os
 from tqdm import tqdm
-from keras.preprocessing.image import img_to_array, load_img
+from tensorflow.keras.preprocessing.image import img_to_array, load_img
 from skimage.transform import resize
 from sklearn.model_selection import train_test_split
+import zipfile
 
 class DatasetSalt(dataset_base.DatasetBase):
   def __init__(self,
@@ -32,7 +33,7 @@ class DatasetSalt(dataset_base.DatasetBase):
     im_width = 128
     im_height = 128
     
-    path = self.download_data()
+    path, target_path = self.download_data()
     ids = os.listdir(path)
     print("No. of images = ", len(ids))
 
@@ -45,27 +46,38 @@ class DatasetSalt(dataset_base.DatasetBase):
       x_img = img_to_array(img)
       x_img = resize(x_img, (128, 128, 1), mode='constant', preserve_range=True)
       # Load masks
-      mask = img_to_array(load_img("masks/" + id_, grayscale=True))
+      mask = img_to_array(load_img(os.path.join(target_path, id_), grayscale=True))
       mask = resize(mask, (128, 128, 1), mode='constant', preserve_range=True)
       # Save images
       X[n] = x_img / 255.0
       y[n] = mask / 255.0
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=train_order_seed)
+    print("X_train shape: {}".format(X_train.shape))
+    print("X_test shape: {}".format(X_test.shape))
+    print("y_train shape: {}".format(y_train.shape))
+    print("y_test shape: {}".format(y_test.shape))
     
     # Prepare the dataset.
     super(DatasetSalt, self).__init__(
       (X_train, y_train),
-      64, (X_test, y_test),
+      32, (X_test, y_test),
       train_order_seed=train_order_seed)
     
   def download_data(self):
     import urllib.request
   
-    data_path = "/tmp/creditcard_train.csv"
+    data_landing_path = "/tmp/salt.zip"
   
-    urllib.request.urlretrieve("https://www.dropbox.com/s/3dl28vfsh6lo8s9/creditcard_train.csv?dl=1", data_path)
-    return data_path
+    urllib.request.urlretrieve("https://www.dropbox.com/s/5y7sv8yq8j4iam1/train.zip?dl=1", data_landing_path)
+
+    zip_ref = zipfile.ZipFile(data_landing_path, 'r')
+    zip_ref.extractall('/tmp/salt/')
+    zip_ref.close()
+
+    data_path = '/tmp/salt/images'
+    target_path = '/tmp/salt/masks'
+    return data_path, target_path
 
 
 class DatasetMnist(dataset_base.DatasetBase):
