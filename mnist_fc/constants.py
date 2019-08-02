@@ -47,7 +47,7 @@ PRUNE_PERCENTS = {'encoder_conv_0_conv1': .1, 'encoder_conv_0_conv2': .1,
 
 NUM_EPOCHS = 1
 TRAINING_LEN = ('iterations', 50000)
-NUM_ITERATIONS = 1  # Number of times to prune the network
+NUM_ITERATIONS = 3  # Number of times to prune the network
 EXPERIMENT_NAME = 'unet'
 EXPERIMENT_PATH = 'unet'
 

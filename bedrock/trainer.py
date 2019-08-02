@@ -14,6 +14,8 @@
 
 """A function that trains a network on a dataset."""
 
+import os
+
 from bedrock import paths
 from bedrock import save_restore
 import tensorflow as tf
@@ -128,7 +130,7 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
     def save_image(image, path):
         plt.figure(figsize=(14, 10))
 
-        plt.imshow(image.squeeze(), cmap='gray', vmin=0, vmax=255)
+        plt.imshow(image[0].squeeze(), cmap='gray', vmin=0, vmax=255)
         plt.savefig(path)
 
 
@@ -188,11 +190,17 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
         targets_artifact_path = save_image(targets, 'targets_{}'.format(iteration))
         outputs_artifact_path = save_image(outputs, 'outputs_{}'.format(iteration))
 
+        tensorboard_path = 'lottery_ticket/{}/unet/summaries/'.format(iteration)
+        tensorboard_file = os.path.join(tensorboard_path, os.listdir(tensorboard_path)[0])
+        f9s.save_artifact('tensorboard_{}'.format(iteration), tensorboard_file)
+
         f9s.log_metric('loss_{}'.format(iteration), loss)
         f9s.log_metric('val_loss_{}'.format(iteration), val_loss)
         f9s.save_artifact('inputs_{}'.format(iteration), inputs_artifact_path)
         f9s.save_artifact('targets_{}'.format(iteration), targets_artifact_path)
         f9s.save_artifact('outputs_{}'.format(iteration), outputs_artifact_path)
+
+
 
         # End of epoch handling.
         return
