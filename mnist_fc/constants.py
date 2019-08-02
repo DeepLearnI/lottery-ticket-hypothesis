@@ -43,7 +43,7 @@ def search():
                                 int(np.random.choice([16, 32, 64])), int(np.random.choice([16, 32, 64])), int(np.random.choice([16, 32, 64])), 
                                 1]}
   OPTIMIZER_FN = functools.partial(tf.train.AdamOptimizer, float(np.random.uniform(0.0001, 0.001)))
-  BATCH_SIZE = int(np.random.choice([32, 64, 128, 256]))
+  BATCH_SIZE = int(np.random.choice([32, 64, 128]))
   return PRUNE_PERCENTS, HYPERPARAMETERS, OPTIMIZER_FN, BATCH_SIZE
 
 

@@ -25,6 +25,7 @@ from mnist_fc.constants import NUM_EPOCHS
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
 import foundations as f9s
 
 logger = get_logger('Train')
@@ -188,6 +189,7 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
 
         tensorboard_path = 'lottery_ticket/{}/unet/summaries/'.format(iteration)
         tensorboard_file = os.path.join(tensorboard_path, os.listdir(tensorboard_path)[0])
+        
         f9s.save_artifact(tensorboard_file, 'tensorboard_{}'.format(iteration))
 
         f9s.log_metric('loss_{}'.format(iteration), float(loss))
