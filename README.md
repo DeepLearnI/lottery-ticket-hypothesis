@@ -5,7 +5,7 @@
 The original codebase was developed by Jonathan Frankle and David Bieber at Google during
 the summer of 2018. 
 
-Subsequently, this repo was significantly changed in 2019 by Helen Ngo (h.ngo@dessa.com) and Rayhane Mama (r.mama@dessa.com) at Dessa to add support for convolutional layers and the u-net model architecture.
+Subsequently, this repo was significantly changed in 2019 by Helen Ngo and Rayhane Mama at Dessa to add support for convolutional layers and the u-net model architecture.
 
 ## Background
 
