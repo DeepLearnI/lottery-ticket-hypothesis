@@ -21,10 +21,11 @@ from bedrock import save_restore
 import tensorflow as tf
 import time
 from utils import get_logger
-from mnist_fc.constants import NUM_EPOCHS
+from satellite_segmentation.constants import NUM_EPOCHS
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import numpy as np
 
 import foundations as f9s
 
@@ -123,13 +124,10 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
                                {dataset.handle: validate_handle})
             record_summaries(iteration, records, validate_file)
 
-    def save_image(image, path, is_input=False):
+    def save_image(image, path):
         plt.figure(figsize=(14, 10))
 
-        if is_input:
-            plt.imshow(image[0].squeeze(), cmap='gray')
-        else:
-            plt.imshow(image[0].squeeze())
+        plt.imshow(image[0])
         plt.savefig(path, format='png')
         return path
 
@@ -183,7 +181,10 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
                     break
             logger.info("Time for epoch: {}".format(time.time() - start_time))
 
-        inputs_artifact_path = save_image(inputs, 'inputs_{}'.format(iteration) + '.png', is_input=True)
+        outputs = output_to_rgb(outputs)
+        targets = output_to_rgb(targets)
+
+        inputs_artifact_path = save_image(inputs, 'inputs_{}'.format(iteration) + '.png')
         targets_artifact_path = save_image(targets, 'targets_{}'.format(iteration) + '.png')
         outputs_artifact_path = save_image(outputs, 'outputs_{}'.format(iteration) + '.png')
 
@@ -216,3 +217,26 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
         save_restore.save_network(paths.final(output_dir), final_weights)
 
     return initial_weights, final_weights
+
+
+def output_to_rgb(masks):
+    label_values = [[255, 255, 255],
+                    [128, 64, 128],
+                    [244, 35, 232],
+                    [70, 70, 70],
+                    [102, 102, 156],
+                    [190, 153, 153],
+                    [153, 153, 153],
+                    [250, 170, 30],
+                    [220, 220, 0],
+                    [107, 142, 35],
+                    [152, 251, 152]]
+
+    rounded_outputs = np.round(masks)
+    has_class = np.max(rounded_outputs, axis=-1)
+
+    outputs = (np.argmax(masks, axis=-1) + 1) * has_class
+
+    colour_codes = np.array(label_values)
+    outputs = colour_codes[outputs.astype(int)]
+    return outputs

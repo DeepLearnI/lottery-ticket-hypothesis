@@ -65,7 +65,7 @@ def train(output_dir,
   """
   # Define model and dataset functions.
   def make_dataset():
-    return dataset_mnist.DatasetMnist(
+    return dataset_mnist.Dataset(
         mnist_location,
         permute_labels=permute_labels,
         train_order_seed=train_order_seed)

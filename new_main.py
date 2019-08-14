@@ -14,14 +14,14 @@ from __future__ import division
 from __future__ import print_function
 
 import functools
-from datasets import dataset_mnist
+from datasets import dataset
 from bedrock import experiment
-from bedrock import model_fc
+from bedrock import model
 from bedrock import paths
 from bedrock import pruning
 from bedrock import save_restore
 from bedrock import trainer
-from mnist_fc import constants
+from satellite_segmentation import constants
 
 from utils import get_logger
 import os
@@ -72,17 +72,10 @@ def train(output_dir,
     """
 
     # Define model and dataset functions.
-    def make_dataset():
-        return dataset_mnist.DatasetMnist(
-            mnist_location,
-            permute_labels=permute_labels,
-            train_order_seed=train_order_seed)
-
     def make_unet_dataset():
-        return dataset_mnist.DatasetSalt(train_order_seed)
+        return dataset.Dataset(train_order_seed)
 
-    make_model = functools.partial(model_fc.ModelU, constants.HYPERPARAMETERS)
-                                   #ModelFc, constants.HYPERPARAMETERS)
+    make_model = functools.partial(model.ModelU, constants.HYPERPARAMETERS)
 
     # Define a training function.
     def train_model(sess, level, dataset, model):

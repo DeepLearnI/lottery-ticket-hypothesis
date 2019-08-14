@@ -67,7 +67,7 @@ def train(output_dir,
   presets = save_restore.standardize(presets)
 
   # Create the dataset and model.
-  dataset = dataset_mnist.DatasetMnist(
+  dataset = dataset_mnist.Dataset(
       mnist_location, train_order_seed=train_order_seed)
   inputs, labels = dataset.placeholders
   model = model_fc.ModelFc(
