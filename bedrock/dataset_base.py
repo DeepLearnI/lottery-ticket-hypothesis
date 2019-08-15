@@ -22,7 +22,7 @@ class DatasetSplit(object):
   """A split of a dataset, for example just the training data."""
 
   def __init__(self, data, batch_size=None, shuffle=False, seed=None):
-    size = data[0].shape[0]
+    size = data[0].shape[0] // 4
     #size = 4096 # HN - can change if memory intensive
     height = data[0].shape[1]
     width = data[0].shape[2]
@@ -49,11 +49,11 @@ class DatasetSplit(object):
 
     # Build the dataset.
     self._dataset = tf.data.Dataset.from_generator(generator, (tf.float32, tf.float32), (tf.TensorShape([None, height, width, channels]), 
-                                                                                         tf.TensorShape([None, height, width, classes]))).cache()
+                                                                                         tf.TensorShape([None, height, width, classes])))
 
     # Shuffle if applicable.
     if shuffle:
-      self._dataset = self._dataset.shuffle(size, seed=seed)
+      self._dataset = self._dataset
 
     # Create an iterator for the dataset.
     self._iterator = self._dataset.make_initializable_iterator()

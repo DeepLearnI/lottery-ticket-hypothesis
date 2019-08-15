@@ -29,8 +29,8 @@ import foundations as f9s
 ISZ = 160
 N_Cls = 10
 
-inputs_file_name = 'x_train.npy'
-targets_file_name = 'y_train.npy'
+inputs_file_name = 'buildings_sampled_x_train.npy'
+targets_file_name = 'buildings_sampled_y_train.npy'
 
 def search():
   PRUNE_PERCENTS = {'encoder_conv_0_conv1': float(np.random.uniform(0.1, 0.3)), 'encoder_conv_0_conv2': float(np.random.uniform(0.1, 0.3)),
@@ -49,7 +49,7 @@ def search():
                                 int(np.random.choice([16, 32, 64])), int(np.random.choice([16, 32, 64])), int(np.random.choice([16, 32, 64])), 
                                 N_Cls]}
   OPTIMIZER_FN = functools.partial(tf.train.AdamOptimizer, float(np.random.uniform(0.0001, 0.001)))
-  BATCH_SIZE = int(np.random.choice([64, 128, 256]))
+  BATCH_SIZE = int(np.random.choice([64, 128, 32]))
   return PRUNE_PERCENTS, HYPERPARAMETERS, OPTIMIZER_FN, BATCH_SIZE
 
 HYPERPARAMETERS = {'layers': [16, 32, 64, 128, 256, 128, 64, 32, 16, 1]}
@@ -67,7 +67,7 @@ PRUNE_PERCENTS = {'encoder_conv_0_conv1': .1, 'encoder_conv_0_conv2': .1,
                   'output_layer': .1}
 
 BATCH_SIZE = 64
-NUM_EPOCHS = 10
+NUM_EPOCHS = 3
 TRAINING_LEN = ('iterations', 50000)
 NUM_ITERATIONS = 3  # Number of times to prune the network
 EXPERIMENT_NAME = 'unet'
@@ -78,7 +78,10 @@ PRUNE_PERCENTS, HYPERPARAMETERS, OPTIMIZER_FN, BATCH_SIZE = search()
 # This logs the dictionary elements into the GUI under Parameters
 params_dict = {**HYPERPARAMETERS, **PRUNE_PERCENTS,
                'epochs': NUM_EPOCHS,
-               'iterations': TRAINING_LEN[1], 'times_pruned': NUM_ITERATIONS}
+               'iterations': TRAINING_LEN[1], 'times_pruned': NUM_ITERATIONS,
+               'batch_size': BATCH_SIZE,
+               'inputs_dataset': inputs_file_name,
+               'targets_dataset': targets_file_name}
 
 f9s.log_params(params_dict)
 
