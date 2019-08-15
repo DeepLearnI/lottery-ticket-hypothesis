@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""The MNIST dataset."""
 
 from bedrock import dataset_base
 import numpy as np
 from satellite_segmentation.constants import BATCH_SIZE, ISZ, N_Cls
+from tqdm import tqdm
 
 
 def get_patches(img, msk, amt=10000, aug=True):
@@ -26,7 +26,7 @@ def get_patches(img, msk, amt=10000, aug=True):
   x, y = [], []
   
   tr = [0.4, 0.1, 0.1, 0.15, 0.3, 0.95, 0.1, 0.05, 0.001, 0.005]
-  for i in range(amt):
+  for i in tqdm(range(amt)):
     xc = np.random.randint(0, xm)
     yc = np.random.randint(0, ym)
     
@@ -47,20 +47,23 @@ def get_patches(img, msk, amt=10000, aug=True):
         x.append(im)
         y.append(ms)
   
-    x, y = np.array(x), np.array(y)
-    print(x.shape, y.shape, np.amax(x), np.amin(x), np.amax(y), np.amin(y))
-    return x, y
+  x, y = np.array(x, dtype=np.float32), np.array(y, dtype=np.float32)
+  print(x.shape, y.shape, np.amax(x), np.amin(x), np.amax(y), np.amin(y))
+  return x, y
 
 class Dataset(dataset_base.DatasetBase):
   def __init__(self,
                train_order_seed=None):
     
+    print('Downloading dataset..')
     input_path, target_path = self.download_data()
     
+    print('Preprocessing data..')
     inputs = np.load(input_path)
     targets = np.load(target_path)
     X, y = get_patches(inputs, targets, amt=100000)
     
+    print('Splitting data..')
     split_idx = int(X.shape[0]*0.8)
     X_train, X_test = X[:split_idx], X[split_idx:]
     y_train, y_test = y[:split_idx], y[split_idx:]
@@ -82,6 +85,6 @@ class Dataset(dataset_base.DatasetBase):
     input_path = '/tmp/inputs.npy'
     target_path = '/tmp/targets.npy'
   
-    urllib.request.urlretrieve("http://dl-shareable.s3.amazonaws.com/x_train.npy", input_path)
-    urllib.request.urlretrieve("http://dl-shareable.s3.amazonaws.com/y_train.npy", target_path)
+    urllib.request.urlretrieve("http://dl-shareable.s3.amazonaws.com/sampled_x_train.npy", input_path)
+    urllib.request.urlretrieve("http://dl-shareable.s3.amazonaws.com/sampled_y_train.npy", target_path)
     return input_path, target_path

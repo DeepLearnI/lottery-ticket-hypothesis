@@ -15,6 +15,7 @@
 """A base class for managing datasets."""
 
 import tensorflow as tf
+from satellite_segmentation.constants import NUM_EPOCHS
 
 
 class DatasetSplit(object):
@@ -23,18 +24,36 @@ class DatasetSplit(object):
   def __init__(self, data, batch_size=None, shuffle=False, seed=None):
     size = data[0].shape[0]
     #size = 4096 # HN - can change if memory intensive
+    height = data[0].shape[1]
+    width = data[0].shape[2]
+    channels = data[0].shape[3]
+    classes = data[1].shape[3]
+
+    index = 0
+    def generator():
+      index = 0
+      epoch = 0
+      X, y = data
+      while True:
+        if index >= len(X):
+          index = 0
+          epoch += 1
+
+        X_r, y_r = X[index: index+batch_size], y[index: index+batch_size]
+        index += batch_size
+
+        if epoch >= NUM_EPOCHS:
+          raise tf.errors.OutOfRangeError
+
+        yield X_r, y_r
 
     # Build the dataset.
-    self._dataset = tf.data.Dataset.from_tensor_slices(data)
+    self._dataset = tf.data.Dataset.from_generator(generator, (tf.float32, tf.float32), (tf.TensorShape([height, width, channels]), 
+                                                                                         tf.TensorShape([height, width, classes]))).cache()
 
     # Shuffle if applicable.
     if shuffle:
       self._dataset = self._dataset.shuffle(size, seed=seed)
-
-    # Split into batches.
-    if not batch_size:
-      batch_size = size
-    self._dataset = self._dataset.batch(batch_size)
 
     # Create an iterator for the dataset.
     self._iterator = self._dataset.make_initializable_iterator()
