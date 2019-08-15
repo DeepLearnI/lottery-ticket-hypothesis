@@ -15,7 +15,7 @@
 
 from bedrock import dataset_base
 import numpy as np
-from satellite_segmentation.constants import BATCH_SIZE, ISZ, N_Cls
+from satellite_segmentation.constants import BATCH_SIZE, ISZ, N_Cls, targets_file_name, inputs_file_name
 from tqdm import tqdm
 
 
@@ -61,7 +61,7 @@ class Dataset(dataset_base.DatasetBase):
     print('Preprocessing data..')
     inputs = np.load(input_path)
     targets = np.load(target_path)
-    X, y = get_patches(inputs, targets, amt=100000)
+    X, y = get_patches(inputs, targets, amt=10000)
     
     print('Splitting data..')
     split_idx = int(X.shape[0]*0.8)
@@ -85,6 +85,6 @@ class Dataset(dataset_base.DatasetBase):
     input_path = '/tmp/inputs.npy'
     target_path = '/tmp/targets.npy'
   
-    urllib.request.urlretrieve("http://dl-shareable.s3.amazonaws.com/sampled_x_train.npy", input_path)
-    urllib.request.urlretrieve("http://dl-shareable.s3.amazonaws.com/sampled_y_train.npy", target_path)
+    urllib.request.urlretrieve("http://dl-shareable.s3.amazonaws.com/{}".format(inputs_file_name), input_path)
+    urllib.request.urlretrieve("http://dl-shareable.s3.amazonaws.com/{}".format(targets_file_name), target_path)
     return input_path, target_path
