@@ -232,7 +232,8 @@ def output_to_rgb(masks):
                     [107, 142, 35],
                     [152, 251, 152]]
 
-    rounded_outputs = np.round(masks)
+    threshhold = 0.5
+    rounded_outputs = np.where(masks > threshhold, 1., 0.)
     has_class = np.max(rounded_outputs, axis=-1)
 
     outputs = (np.argmax(masks, axis=-1) + 1) * has_class

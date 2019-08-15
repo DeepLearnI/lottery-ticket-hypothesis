@@ -67,7 +67,7 @@ PRUNE_PERCENTS = {'encoder_conv_0_conv1': .1, 'encoder_conv_0_conv2': .1,
                   'output_layer': .1}
 
 BATCH_SIZE = 64
-NUM_EPOCHS = 3
+NUM_EPOCHS = 10
 TRAINING_LEN = ('iterations', 50000)
 NUM_ITERATIONS = 3  # Number of times to prune the network
 EXPERIMENT_NAME = 'unet'

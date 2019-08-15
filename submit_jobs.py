@@ -1,6 +1,6 @@
 import foundations as f9s
 
-NUM_JOBS = 5
+NUM_JOBS = 3
 
 for i in range(NUM_JOBS):
     f9s.deploy(env='scheduler',
