@@ -172,7 +172,7 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
                     record_summaries(step, records, train_file)
 
                     #print(step)
-                    if step % 1000 == 0:
+                    if step % 10 == 0:
                         logger.info("Step {} - Loss: {} - Time per step: {}".format(step, loss, time.time() - step_time))
 
                     collect_test_summaries(step)

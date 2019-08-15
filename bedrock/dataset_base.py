@@ -43,13 +43,13 @@ class DatasetSplit(object):
         index += batch_size
 
         if epoch >= NUM_EPOCHS:
-          raise tf.errors.OutOfRangeError
+          break
 
         yield X_r, y_r
 
     # Build the dataset.
-    self._dataset = tf.data.Dataset.from_generator(generator, (tf.float32, tf.float32), (tf.TensorShape([height, width, channels]), 
-                                                                                         tf.TensorShape([height, width, classes]))).cache()
+    self._dataset = tf.data.Dataset.from_generator(generator, (tf.float32, tf.float32), (tf.TensorShape([None, height, width, channels]), 
+                                                                                         tf.TensorShape([None, height, width, classes]))).cache()
 
     # Shuffle if applicable.
     if shuffle:
@@ -83,9 +83,9 @@ class DatasetBase(object):
     # Create datasets for each segment of the data.
     self._train = DatasetSplit(
         train, train_batch_size, shuffle=True, seed=train_order_seed)
-    self._test = DatasetSplit(test)
+    self._test = DatasetSplit(test, train_batch_size)
     if validate:
-      self._validate = DatasetSplit(validate)
+      self._validate = DatasetSplit(validate, train_batch_size)
     else:
       self._validate = None
 
