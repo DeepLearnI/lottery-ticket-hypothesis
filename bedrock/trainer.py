@@ -27,7 +27,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 
-import foundations as f9s
+#import foundations as f9s
 
 logger = get_logger('Train')
 
@@ -100,8 +100,6 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
                 summary_proto.ParseFromString(record)
                 value = summary_proto.value[0]
                 log += [value.tag, str(value.simple_value)]
-
-            #f9s.log_metric(value.tag, str(value.simple_value))
 
             fp.write(','.join(log) + '\n')
 
@@ -191,13 +189,13 @@ def train(sess, dataset, model, optimizer_fn, training_len, iteration, output_di
         tensorboard_path = 'lottery_ticket/{}/unet/summaries/'.format(iteration)
         tensorboard_file = os.path.join(tensorboard_path, os.listdir(tensorboard_path)[0])
         
-        f9s.save_artifact(tensorboard_file, 'tensorboard_{}'.format(iteration))
+        #f9s.save_artifact(tensorboard_file, 'tensorboard_{}'.format(iteration))
 
-        f9s.log_metric('loss_{}'.format(iteration), float(loss))
+        #f9s.log_metric('loss_{}'.format(iteration), float(loss))
 
-        f9s.save_artifact(inputs_artifact_path, 'inputs_{}'.format(iteration))
-        f9s.save_artifact(targets_artifact_path, 'targets_{}'.format(iteration))
-        f9s.save_artifact(outputs_artifact_path, 'outputs_{}'.format(iteration))
+        #f9s.save_artifact(inputs_artifact_path, 'inputs_{}'.format(iteration))
+        #f9s.save_artifact(targets_artifact_path, 'targets_{}'.format(iteration))
+        #f9s.save_artifact(outputs_artifact_path, 'outputs_{}'.format(iteration))
 
         # End of epoch handling.
         return
@@ -232,7 +230,7 @@ def output_to_rgb(masks):
                     [107, 142, 35],
                     [152, 251, 152]]
 
-    threshhold = 0.5
+    threshhold = 0.3
     rounded_outputs = np.where(masks > threshhold, 1., 0.)
     has_class = np.max(rounded_outputs, axis=-1)
 
